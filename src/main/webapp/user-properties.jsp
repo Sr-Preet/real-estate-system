@@ -1,16 +1,13 @@
 <%@ include file="header/header.jsp" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.real_estate.model.Property" %>
-<%@ page import="com.real_estate.model.User" %>
 <%
     List<Property> properties = (List<Property>) request.getAttribute("properties");
-    HttpSession sessionProp = request.getSession(false);
-    User userProp = (sessionProp != null) ? (User) sessionProp.getAttribute("user") : null;
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Properties</title>
+    <title>My Purchased Properties</title>
     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css">
     <!-- jQuery and DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -21,10 +18,10 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <h1 class="dashboard-header">Buy Properties</h1>
+        <h1 class="dashboard-header">My Purchased Properties</h1>
         
         <% if (properties == null || properties.isEmpty()) { %>
-            <p class="no-properties-message">No properties available at the moment.</p>
+            <p class="no-properties-message">No properties purchased yet.</p>
         <% } else { %>
             <div class="properties-table-container">
                 <table id="propertiesTable" class="display">
@@ -36,36 +33,17 @@
                             <th>Price</th>
                             <th>Description</th>
                             <th>Image</th>
-                            <% if (userProp != null && "user".equals(userProp.getRole())) { %>
-                                <th>Action</th>
-                            <% } %>
                         </tr>
                     </thead>
                     <tbody>
-                        <% for (Property property : properties) {
-                            if ("sold".equals(property.getStatus())) {
-                                continue; // Skip sold properties
-                            }
-                        %>
+                        <% for (Property property : properties) { %>
                         <tr>
                             <td><%= property.getId() %></td>
-                    <td><a href="<%= request.getContextPath() %>/view-property.jsp?id=<%= property.getId() %>"><%= property.getName() %></a></td>
+                            <td><a href="<%= request.getContextPath() %>/view-property.jsp?id=<%= property.getId() %>"><%= property.getName() %></a></td>
                             <td><%= property.getLocation() %></td>
                             <td>$ <%= property.getPrice() %></td>
                             <td><%= property.getDescription() %></td>
                             <td><img src="data:image/jpeg;base64,<%= property.getImage() %>" alt="Property Image" class="property-image"/></td>
-                            <% if (userProp != null && "user".equals(userProp.getRole())) { %>
-                                <td>
-                                    <% if ("available".equals(property.getStatus())) { %>
-                                        <form action="<%= request.getContextPath() %>/buy" method="post">
-                                            <input type="hidden" name="propertyId" value="<%= property.getId() %>"/>
-                                            <input type="submit" value="Buy"/>
-                                        </form>
-                                    <% } else { %>
-                                        <span>Sold</span>
-                                    <% } %>
-                                </td>
-                            <% } %>
                         </tr>
                         <% } %>
                     </tbody>

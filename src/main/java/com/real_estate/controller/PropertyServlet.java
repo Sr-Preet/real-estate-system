@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //@WebServlet("/property")
+@WebServlet(name = "PropertyServlet", urlPatterns = {"/property"})
 public class PropertyServlet extends HttpServlet {
     private static final long serialVersionUID = 3207005023808446852L;
     private PropertyDAO propertyDAO = new PropertyDAO();
@@ -22,7 +24,13 @@ public class PropertyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Property> properties = propertyDAO.getAllProperties();
-        request.setAttribute("properties", properties);
+        
+        // Filter out sold properties
+        List<Property> availableProperties = properties.stream()
+            .filter(property -> "available".equals(property.getStatus()))
+            .collect(Collectors.toList());
+        
+        request.setAttribute("properties", availableProperties);
         request.getRequestDispatcher("/property.jsp").forward(request, response);
     }
 
@@ -44,6 +52,6 @@ public class PropertyServlet extends HttpServlet {
         Property property = new Property(name, location, price, description, base64Image);
         propertyDAO.addProperty(property);
 
-        response.sendRedirect("property.jsp");
+        response.sendRedirect(request.getContextPath() + "/admin");
     }
 }

@@ -1,41 +1,34 @@
 package com.real_estate.model;
 
-public class Property {
-    private int id;
+public class PropertyTransactionDTO {
+    private int propertyId;
     private String name;
     private String location;
     private double price;
     private String description;
-    private String image; // Base64 encoded image string
-    private String status;  // New field
+    private String image;
+    private String status;
+    private String buyerName; // or any other relevant field
 
-    public Property(int id, String name, String location, double price, String description, String image, String status) {
-        this.id = id;
+    public PropertyTransactionDTO(int propertyId, String name, String location, double price, String description, String image, String status, String buyerName) {
+        this.propertyId = propertyId;
         this.name = name;
         this.location = location;
         this.price = price;
         this.description = description;
         this.image = image;
         this.status = status;
-    }
-
-    // Constructor for adding a new property
-    public Property(String name, String location, double price, String description, String image) {
-        this.name = name;
-        this.location = location;
-        this.price = price;
-        this.description = description;
-        this.image = image;
-        this.status = "available"; // Default status
+        this.buyerName = buyerName;
     }
 
     // Getters and Setters
-    public int getId() {
-        return id;
+
+    public int getPropertyId() {
+        return propertyId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPropertyId(int propertyId) {
+        this.propertyId = propertyId;
     }
 
     public String getName() {
@@ -84,5 +77,13 @@ public class Property {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 }

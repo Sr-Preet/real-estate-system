@@ -10,22 +10,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "RegistrationServlet", urlPatterns = {"/register"})
+@WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     private UserDAO userDAO = new UserDAO();
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Forward to registration form
+        request.getRequestDispatcher("/register.jsp").forward(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Get user details from request parameters
         String username = request.getParameter("username");
-        String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        String role = "user"; // Default role
 
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setRole("user");
+        // Create a new user object
+        User newUser = new User(username, password, email, role);
 
+        // Save user to the database
         userDAO.addUser(newUser);
-        response.sendRedirect("login");
+
+        // Redirect to login page after successful registration
+        response.sendRedirect(request.getContextPath() + "/login");
     }
 }

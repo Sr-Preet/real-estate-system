@@ -1,6 +1,9 @@
 package com.real_estate.controller;
 
 import com.real_estate.dao.PropertyDAO;
+import com.real_estate.dao.TransactionDAO;
+import com.real_estate.model.Property;
+import com.real_estate.model.Transaction;
 import com.real_estate.model.User;
 
 import javax.servlet.ServletException;
@@ -15,29 +18,30 @@ import java.io.IOException;
 public class BuyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PropertyDAO propertyDAO = new PropertyDAO();
+    private TransactionDAO transactionDAO = new TransactionDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int propertyId = Integer.parseInt(request.getParameter("propertyId"));
         HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
+        User user = (User) session.getAttribute("user");
+        if (user != null && "user".equals(user.getRole())) {
+            Property property = propertyDAO.getPropertyById(propertyId);
+            if (property != null && "available".equals(property.getStatus())) {
+                double amount = property.getPrice(); // Assuming the amount to be the property price
+                Transaction transaction = new Transaction(user.getId(), propertyId, amount);
+                transactionDAO.addTransaction(transaction);
+                
+                // Update property status
+                property.setStatus("sold");
+                propertyDAO.updateProperty(property);
 
-        if (user == null || !"user".equals(user.getRole())) {
-            response.sendRedirect("login");
-            return;
-        }
-
-        String propertyIdStr = request.getParameter("propertyId");
-        if (propertyIdStr != null && !propertyIdStr.trim().isEmpty()) {
-            try {
-                int propertyId = Integer.parseInt(propertyIdStr);
-                propertyDAO.markAsSold(propertyId);
-                response.sendRedirect("property");
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                response.sendRedirect("property?error=invalid");
+                response.sendRedirect("property.jsp");
+            } else {
+                response.sendRedirect("error.jsp"); // Or some error handling
             }
         } else {
-            response.sendRedirect("property?error=missingId");
+            response.sendRedirect("login"); // Redirect to login if not authenticated
         }
     }
 }

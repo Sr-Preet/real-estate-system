@@ -6,11 +6,6 @@ public class Transaction {
     private int propertyId;
     private double amount;
 
-    // Default constructor
-    public Transaction() {
-    }
-
-    // Constructor with all fields
     public Transaction(int id, int userId, int propertyId, double amount) {
         this.id = id;
         this.userId = userId;
@@ -18,7 +13,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    // Getters and Setters
+    public Transaction(int userId, int propertyId, double amount) {
+        this.userId = userId;
+        this.propertyId = propertyId;
+        this.amount = amount;
+    }
+
     public int getId() {
         return id;
     }
