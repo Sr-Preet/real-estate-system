@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/register")
+//@WebServlet("/register")
+@WebServlet(name = "RegistrationServlet", urlPatterns = { "/register" })
 public class RegistrationServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UserDAO userDAO = new UserDAO();
@@ -30,7 +31,11 @@ public class RegistrationServlet extends HttpServlet {
         String role = "user"; // Default role
 
         // Create a new user object
-        User newUser = new User(username, password, email, role);
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setRole(role);
 
         // Save user to the database
         userDAO.addUser(newUser);

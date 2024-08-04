@@ -32,6 +32,10 @@ public class User {
         this.email = email;
     }
 
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+
 	// Getters and Setters
     public int getId() {
         return id;
