@@ -173,6 +173,7 @@ h1.add-property-header {
 .add-property-form-container {
     width: 50%;
     margin: 20px auto;
+    margin-bottom: 100px;
 }
 
 .add-property-form input[type="text"],
