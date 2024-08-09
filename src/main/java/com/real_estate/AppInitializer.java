@@ -16,6 +16,7 @@ public class AppInitializer implements ServletContextListener {
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_EMAIL = "admin@email.com";
     private static final String ADMIN_PASSWORD = "admin";
+    private static final String ADMIN_ROLE = "admin";
 
     public void contextInitialized(ServletContextEvent sce) {
         try (Connection connection = DBUtil.getConnection();
@@ -48,11 +49,12 @@ public class AppInitializer implements ServletContextListener {
     }
 
     private void createAdminUser(Connection connection) throws SQLException {
-        String query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+        String query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, ADMIN_USERNAME);
             pstmt.setString(2, ADMIN_EMAIL);
             pstmt.setString(3, ADMIN_PASSWORD);
+            pstmt.setString(4, ADMIN_ROLE);
             pstmt.executeUpdate();
         }
     }
