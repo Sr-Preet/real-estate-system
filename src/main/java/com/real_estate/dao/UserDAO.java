@@ -12,6 +12,7 @@ public class UserDAO {
     private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     private static final String UPDATE_USER_SQL = "UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?";
+    private static final String UPDATE_USER_PASSWORD = "UPDATE users SET password = ? WHERE email = ?";
 
 
 
@@ -103,5 +104,42 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public User getUserByEmail(String email) {
+        String query = "SELECT * FROM users WHERE email = ?";
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setUsername(resultSet.getString("username"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setPassword(resultSet.getString("password"));
+                    user.setRole(resultSet.getString("role"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;  // Return null if no user is found
+    }
+    
+    
+    public boolean updateUserPassword(String email, String newPassword) {
+        boolean rowUpdated = false;
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PASSWORD)) {
+            preparedStatement.setString(1, newPassword);
+            preparedStatement.setString(2, email);
+
+            rowUpdated = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowUpdated;
     }
 }

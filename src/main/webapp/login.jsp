@@ -103,8 +103,10 @@ button:hover {
             <button type="submit">Login</button>
         </form>
         <div style="text-align: center; margin-top: 10px;">
-            <a href="<%=request.getContextPath()%>/register">Don't have an account? Register here</a>
-        </div>
+		    <a href="<%=request.getContextPath()%>/register">Don't have an account? Register here</a>
+		    <br>
+		    <a href="<%=request.getContextPath()%>/forgot-password.jsp">Forgot Password?</a>
+		</div>
     </div>
 </body>
 </html>

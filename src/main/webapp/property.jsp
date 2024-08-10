@@ -19,13 +19,13 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <style>
-    .buy-btn {
-        background-color: #3498db;
-        color: #fff;
-        border: none;
-        padding: 10px;
-        border-radius: 4px;
-        cursor: pointer;
+    #bt{
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
     }
     </style>
 </head>
@@ -59,7 +59,7 @@
                         %>
                         <tr>
                             <td><%= property.getId() %></td>
-                            <td><a href="<%= request.getContextPath() %>/view-property.jsp?id=<%= property.getId() %>"><%= property.getName() %></a></td>
+                    <td><a href="<%= request.getContextPath() %>/view-property.jsp?id=<%= property.getId() %>"><%= property.getName() %></a></td>
                             <td><%= property.getLocation() %></td>
                             <td>$ <%= property.getPrice() %></td>
                             <td><%= property.getDescription() %></td>
@@ -67,9 +67,9 @@
                             <% if (userProp != null && "user".equals(userProp.getRole())) { %>
                                 <td>
                                     <% if ("available".equals(property.getStatus())) { %>
-                                        <form class="propertyForm" action="<%= request.getContextPath() %>/buy" method="POST">
-                                            <input type="hidden" name="propertyId" value="<%= property.getId() %>"/>
-                                            <input type="button" class="buy-btn" data-price="<%= property.getPrice() %>" value="Buy"/>
+                                       <form  id="propertyForm" action="<%= request.getContextPath() %>/buy" method="POST">
+                                            <input type="hidden" id="propID" name="propertyId" value="<%= property.getId() %>"/>
+                                            <input type="button" id="bt" onclick="buy(<%= property.getPrice() %>)" value="Buy"/>
                                         </form>
                                     <% } else { %>
                                         <span>Sold</span>
@@ -86,7 +86,7 @@
 
     <%@ include file="footer/footer.jsp" %>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
    
     <!-- DataTables Initialization Script -->
     <script>
@@ -96,41 +96,46 @@
                 "searching": true,
                 "ordering": true
             });
-
-            $('.buy-btn').click(function() {
-                var price = $(this).data('price');
-                buy(price, $(this).closest('form'));
-            });
         });
+        
+        function buy(price){
 
-        function buy(price, form) {
+            
             console.log(price);
 
-            var options = {
-                "key": "rzp_test_H7BHZQXmJkTo3q", // Enter the Key ID generated from the Dashboard
-                "amount": price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or INR 500.
-                "currency": "CAD",
-                "name": "Real Estate System",
-                "description": "payment",
-                "handler": function (response) {
-                    console.log(response);
-                    form.submit();
-                },
-                "prefill": {
-                    "name": "", 
-                    "email": "",
-                    "contact": ""
-                },
-                "notes": {
-                    "address": ""
-                },
-                "theme": {
-                    "color": "#092a37"
-                }
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        }
+                           var options = {
+                            
+                            
+                            "key": "rzp_test_H7BHZQXmJkTo3q", // Enter the Key ID generated from the Dashboard
+                            "amount":price*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or INR 500.
+                            "currency": "CAD",
+                            "name": "Real Estate System",
+                            "description": "payment",
+                             "handler": function (response)
+                              {
+                                    
+                               // addToOrder();
+                               console.log(response);
+                               document.getElementById('propertyForm').submit();
+                              
+                             },
+                            "prefill": {
+                                "name": "", "email": "",
+                                "contact": ""
+                            },
+                            "notes": {
+                                "address": ""
+                            },
+                            "theme": {
+                                "color": "#092a37"
+                            }
+                        };
+                        var rzp1 = new Razorpay(options);
+                        document.getElementById('bt').onclick = function (e) {
+                            rzp1.open();
+                            e.preventDefault();
+                        }
+                       }
     </script>
 </body>
 </html>
