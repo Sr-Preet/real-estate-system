@@ -6,6 +6,12 @@
     int propertyId = Integer.parseInt(request.getParameter("id"));
     IPropertyDAO propertyDAO = DAOFactory.getPropertyDAO();
     Property property = propertyDAO.getPropertyById(propertyId);
+    
+    // Get the previous page URL from the Referer header
+    String previousPage = request.getHeader("Referer");
+    if (previousPage == null || previousPage.isEmpty()) {
+        previousPage = request.getContextPath() + "/property";
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -56,7 +62,7 @@
                     </div>
                 </div>
                 <div class="text-center mt-4">
-                    <a href="<%= request.getContextPath() %>/property" class="btn btn-back">Back to Properties</a>
+                    <a href="<%= previousPage %>" class="btn btn-back">Back to Properties</a>
                 </div>
             </div>
         </div>
