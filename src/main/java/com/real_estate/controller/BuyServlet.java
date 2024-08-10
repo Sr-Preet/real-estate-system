@@ -36,7 +36,7 @@ public class BuyServlet extends HttpServlet {
                 property.setStatus("sold");
                 propertyDAO.updateProperty(property);
 
-                response.sendRedirect("property.jsp");
+                response.sendRedirect("user-properties");
             } else {
                 response.sendRedirect("error.jsp"); // Or some error handling
             }
