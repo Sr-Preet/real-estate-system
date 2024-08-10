@@ -68,6 +68,7 @@
         .error-message {
             color: red;
             text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -79,6 +80,12 @@
             <input type="email" id="email" name="email" required>
             <button type="submit">Submit</button>
         </form>
+        <% 
+            String error = request.getParameter("error");
+            if ("notfound".equals(error)) {
+        %>
+            <div class="error-message">Email not found. Please try again.</div>
+        <% } %>
     </div>
 </body>
 </html>
